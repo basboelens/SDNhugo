@@ -1,7 +1,7 @@
 vlans:
-  office:
-    vid: 100
-    description: "office network"
+  guest:
+    vid: 10
+    description: "guest network"
 
 dps:
   s1:
@@ -10,10 +10,10 @@ dps:
     interfaces:
       1:
         name: "h1"
-        native_vlan: office
+        native_vlan: guest
       2:
         name: "to-s10"
-        native_vlan: office
+        native_vlan: guest
 
   s2:
     dp_id: 0x2
@@ -21,10 +21,10 @@ dps:
     interfaces:
       1:
         name: "h2"
-        native_vlan: office
+        native_vlan: guest
       2:
         name: "to-s10"
-        native_vlan: office
+        native_vlan: guest
 
   s10:
     dp_id: 0x10
@@ -32,13 +32,13 @@ dps:
     interfaces:
       1:
         name: "to-s1"
-        native_vlan: office
+        native_vlan: guest
       2:
         name: "to-s2"
-        native_vlan: office
+        native_vlan: guest
       3:
         name: "to-s11"
-        native_vlan: office
+        native_vlan: guest
 
   s3:
     dp_id: 0x3
@@ -46,10 +46,10 @@ dps:
     interfaces:
       1:
         name: "h3"
-        native_vlan: office
+        native_vlan: guest
       2:
         name: "to-s11"
-        native_vlan: office
+        native_vlan: guest
 
   s4:
     dp_id: 0x4
@@ -57,10 +57,10 @@ dps:
     interfaces:
       1:
         name: "h4"
-        native_vlan: office
+        native_vlan: guest
       2:
         name: "to-s11"
-        native_vlan: office
+        native_vlan: guest
 
   s5:
     dp_id: 0x5
@@ -68,10 +68,10 @@ dps:
     interfaces:
       1:
         name: "h5"
-        native_vlan: office
+        native_vlan: guest
       2:
         name: "to-s11"
-        native_vlan: office
+        native_vlan: guest
 
   s11:
     dp_id: 0x11
@@ -79,13 +79,13 @@ dps:
     interfaces:
       1:
         name: "to-s3"
-        native_vlan: office
+        native_vlan: guest
       2:
         name: "to-s4"
-        native_vlan: office
+        native_vlan: guest
       3:
         name: "to-s5"
-        native_vlan: office
+        native_vlan: guest
       4:
         name: "to-s10"
-        native_vlan: office
+        native_vlan: guest
