@@ -1,0 +1,120 @@
+vlans:      
+  employee: 
+    vid: 100
+    faucet_vips: ["10.0.10.1/24"]
+  management:
+    vid: 200
+    faucet_vips: ["10.0.20.1/24"] 
+  guest:
+    vid: 300
+    faucet_vips: ["10.0.30.1/24"]
+
+dps:
+  # Building A edge switches
+  sA1:
+    dp_id: 0xA1
+    hardware: "Open vSwitch"
+    interfaces:
+      1:
+        description: "hA1"
+        native_vlan: employee
+      2:
+        description: "hA2"
+        native_vlan: employee
+      3:
+        description: "uplink to sA10"
+        tagged_vlans: [employee, management, guest]
+
+  sA2:
+    dp_id: 0xA2
+    hardware: "Open vSwitch"
+    interfaces:
+      1:
+        description: "hA3"
+        native_vlan: management
+      2:
+        description: "hA4"
+        native_vlan: guest
+      3:
+        description: "uplink to sA10"
+        tagged_vlans: [employee, management, guest]
+
+  # Building A central switch
+  sA10:
+    dp_id: 0xA10
+    hardware: "Open vSwitch"
+    interfaces:
+      1:
+        description: "uplink from sA1"
+        tagged_vlans: [employee, management, guest]
+      2:
+        description: "uplink from sA2"
+        tagged_vlans: [employee, management, guest]
+      3:
+        description: "uplink to sB10"
+        tagged_vlans: [employee, management, guest]
+      4:
+        description: "dhcp10"
+        native_vlan: employee
+      5:
+        description: "dhcp20"
+        native_vlan: management
+      6:
+        description: "dhcp30"
+        native_vlan: guest
+
+
+  # Building B edge switches
+  sB1:
+    dp_id: 0xB1
+    hardware: "Open vSwitch"
+    interfaces:
+      1:
+        description: "hB1"
+        native_vlan: employee
+      2:
+        description: "hB2"
+        native_vlan: employee
+      3:
+        description: "uplink to sB10"
+        tagged_vlans: [employee, management, guest]
+
+  sB2:
+    dp_id: 0xB2
+    hardware: "Open vSwitch"
+    interfaces:
+      1:
+        description: "hB3"
+        native_vlan: management
+      2:
+        description: "uplink to sB10"
+        tagged_vlans: [employee, management, guest]
+
+  sB3:
+    dp_id: 0xB3
+    hardware: "Open vSwitch"
+    interfaces:
+      1:
+        description: "hB4"
+        native_vlan: guest
+      2:
+        description: "uplink to sB10"
+        tagged_vlans: [employee, management, guest]
+
+  # Building B central switch
+  sB10:
+    dp_id: 0xB10
+    hardware: "Open vSwitch"
+    interfaces:
+      1:
+        description: "uplink from sB1"
+        tagged_vlans: [employee, management, guest]
+      2:
+        description: "uplink from sB2"
+        tagged_vlans: [employee, management, guest]
+      3:
+        description: "uplink from sB3"
+        tagged_vlans: [employee, management, guest]
+      4:
+        description: "uplink to sA10"
+        tagged_vlans: [employee, management, guest]
