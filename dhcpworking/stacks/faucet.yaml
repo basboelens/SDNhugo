@@ -1,0 +1,163 @@
+vlans:
+  employee:
+    vid: 100
+    faucet_vips: ["10.0.10.1/24"]
+  management:
+    vid: 200
+    faucet_vips: ["10.0.20.1/24"]
+  guest:
+    vid: 300
+    faucet_vips: ["10.0.30.1/24"]
+
+routers:
+  main_router:
+    vlans: [employee, management, guest]
+
+dps:
+
+  # Building A
+
+  sA1:
+    dp_id: 0xA1
+    hardware: "Open vSwitch"
+    stack:
+      priority: 1
+    interfaces:
+      1:
+        description: "hA1"
+        native_vlan: employee
+      2:
+        description: "hA2"
+        native_vlan: employee
+      3:
+        description: "to sA10"
+        stack:
+          dp: sA10
+          port: 1
+
+  sA2:
+    dp_id: 0xA2
+    hardware: "Open vSwitch"
+    stack:
+      priority: 0
+    interfaces:
+      1:
+        description: "hA3"
+        native_vlan: management
+      2:
+        description: "hA4"
+        native_vlan: guest
+      3:
+        description: "to sA10"
+        stack:
+          dp: sA10
+          port: 2
+
+  sA10:
+    dp_id: 0xA10
+    hardware: "Open vSwitch"
+    stack:
+      priority: 0
+    interfaces:
+      1:
+        description: "from sA1"
+        stack:
+          dp: sA1
+          port: 3
+      2:
+        description: "from sA2"
+        stack:
+          dp: sA2
+          port: 3
+      3:
+        description: "to sB10"
+        stack:
+          dp: sB10
+          port: 4
+      4:
+        description: "dhcp10"
+        native_vlan: employee
+      5:
+        description: "dhcp20"
+        native_vlan: management
+      6:
+        description: "dhcp30"
+        native_vlan: guest
+
+
+  # Building B
+
+  sB1:
+    dp_id: 0xB1
+    hardware: "Open vSwitch"
+    stack:
+      priority: 0
+    interfaces:
+      1:
+        description: "hB1"
+        native_vlan: employee
+      2:
+        description: "hB2"
+        native_vlan: employee
+      3:
+        description: "to sB10"
+        stack:
+          dp: sB10
+          port: 1
+
+  sB2:
+    dp_id: 0xB2
+    hardware: "Open vSwitch"
+    stack:
+      priority: 0
+    interfaces:
+      1:
+        description: "hB3"
+        native_vlan: management
+      2:
+        description: "to sB10"
+        stack:
+          dp: sB10
+          port: 2
+
+  sB3:
+    dp_id: 0xB3
+    hardware: "Open vSwitch"
+    stack:
+      priority: 0
+    interfaces:
+      1:
+        description: "hB4"
+        native_vlan: guest
+      2:
+        description: "to sB10"
+        stack:
+          dp: sB10
+          port: 3
+
+  sB10:
+    dp_id: 0xB10
+    hardware: "Open vSwitch"
+    stack:
+      priority: 0
+    interfaces:
+      1:
+        description: "from sB1"
+        stack:
+          dp: sB1
+          port: 3
+      2:
+        description: "from sB2"
+        stack:
+          dp: sB2
+          port: 2
+      3:
+        description: "from sB3"
+        stack:
+          dp: sB3
+          port: 2
+      4:
+        description: "to sA10"
+        stack:
+          dp: sA10
+          port: 3
