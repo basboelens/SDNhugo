@@ -1,0 +1,89 @@
+vlans:
+  office:
+    vid: 100
+    faucet_mac: "0e:00:00:00:10:01"
+    faucet_vips: ["10.0.10.254/24"]
+    routes:
+      - route:
+          ip_dst: "0.0.0.0/0"
+          ip_gw: "10.0.30.1"
+      - route:
+          ip_dst: "0.0.0.0/0"
+          ip_gw: "10.0.30.2"
+
+  guest:
+    vid: 200
+    faucet_mac: "0e:00:00:00:20:01"
+    faucet_vips: ["10.0.20.254/24"]
+    routes:
+      - route:
+          ip_dst: "0.0.0.0/0"
+          ip_gw: "10.0.30.1"
+      - route:
+          ip_dst: "0.0.0.0/0"
+          ip_gw: "10.0.30.2"
+
+  management:
+    vid: 300
+    faucet_mac: "0e:00:00:00:30:01"
+    faucet_vips: ["10.0.30.254/24"]
+    routes:
+      - route:
+          ip_dst: "0.0.0.0/0"
+          ip_gw: "10.0.30.1"
+      - route:
+          ip_dst: "0.0.0.0/0"
+          ip_gw: "10.0.30.2"
+
+routers:
+  rtr:
+    vlans: [office, guest, management]
+
+dps:
+  s1:
+    dp_id: 0x1
+    hardware: "Open vSwitch"
+    stack: { priority: 1 }
+    interfaces:
+      1: { name: "h1", native_vlan: office }
+      18: { name: "dhcp1", native_vlan: office }
+      19: { name: "dhcp2", native_vlan: guest }
+      20: { name: "dhcp3", native_vlan: management }
+      21: { name: "to s3", stack: { dp: s3, port: 24 } }
+      22: { name: "c1", native_vlan: management }
+      23: { name: "nat1", native_vlan: management }
+      24: { name: "to s2", stack: { dp: s2, port: 24 } }
+
+  s2:
+    dp_id: 0x2
+    hardware: "Open vSwitch"
+    stack: { priority: 0 }
+    interfaces:
+      1: { name: "h2", native_vlan: office }
+      2: { name: "h3", native_vlan: guest }
+      24: { name: "to s1", stack: { dp: s1, port: 24 } }
+
+  s3:
+    dp_id: 0x3
+    hardware: "Open vSwitch"
+    interfaces:
+      1: { name: "h4", native_vlan: office }
+      2: { name: "c2", native_vlan: management }
+      21: { name: "nat2", native_vlan: management }
+      22: { name: "to s5", stack: { dp: s5, port: 24 } }
+      23: { name: "to s4", stack: { dp: s4, port: 24 } }
+      24: { name: "to s1", stack: { dp: s1, port: 21 } }
+
+  s4:
+    dp_id: 0x4
+    hardware: "Open vSwitch"
+    interfaces:
+      1: { name: "h5", native_vlan: management }
+      24: { name: "to s3", stack: { dp: s3, port: 23 } }
+
+  s5:
+    dp_id: 0x5
+    hardware: "Open vSwitch"
+    interfaces:
+      1: { name: "h6", native_vlan: guest }
+      24: { name: "to s3", stack: { dp: s3, port: 22 } }
