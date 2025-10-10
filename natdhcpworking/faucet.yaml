@@ -40,10 +40,6 @@ dps:
 
       25: { name: "to sAC", stack: { dp: sAC, port: 2 } }
 
-      100: { name: "dhcp10", native_vlan: office }
-      200: { name: "dhcp20", native_vlan: guest }
-      300: { name: "dhcp30", native_vlan: management }
-
   sA2:
     dp_id: 0x2
     hardware: "Open vSwitch"
@@ -68,6 +64,10 @@ dps:
       3: { name: "to sA2", stack: { dp: sA2, port: 25 } }
 
       20: { name: "natA", native_vlan: management }
+
+      100: { name: "dhcp10", native_vlan: office }
+      200: { name: "dhcp20", native_vlan: guest }
+      300: { name: "dhcp30", native_vlan: management }
 
   sB1:
     dp_id: 0x3
