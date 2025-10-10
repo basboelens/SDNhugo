@@ -40,50 +40,63 @@ routers:
     vlans: [office, guest, management]
 
 dps:
-  s1:
+  sA1:
     dp_id: 0x1
     hardware: "Open vSwitch"
     stack: { priority: 1 }
     interfaces:
-      1: { name: "h1", native_vlan: office }
-      18: { name: "dhcp1", native_vlan: office }
-      19: { name: "dhcp2", native_vlan: guest }
-      20: { name: "dhcp3", native_vlan: management }
-      21: { name: "to s3", stack: { dp: s3, port: 24 } }
-      22: { name: "c1", native_vlan: management }
-      23: { name: "nat1", native_vlan: management }
-      24: { name: "to s2", stack: { dp: s2, port: 24 } }
+      1: { name: "hA1v1", native_vlan: office }
+      2: { name: "hA1v2", native_vlan: guest }
+      3: { name: "hA1v3", native_vlan: management }
 
-  s2:
+      100: { name: "dhcp10", native_vlan: office }
+      200: { name: "dhcp20", native_vlan: guest }
+      300: { name: "dhcp30", native_vlan: management }
+      23: { name: "to sB1", stack: { dp: sB1, port: 24 } }
+      24: { name: "natA", native_vlan: management }
+      25: { name: "to sA2", stack: { dp: sA2, port: 24 } }
+
+  sA2:
     dp_id: 0x2
     hardware: "Open vSwitch"
     stack: { priority: 0 }
     interfaces:
-      1: { name: "h2", native_vlan: office }
-      2: { name: "h3", native_vlan: guest }
-      24: { name: "to s1", stack: { dp: s1, port: 24 } }
+      1: { name: "hA2v1", native_vlan: office }
+      2: { name: "hA2v2", native_vlan: guest }
+      3: { name: "hA2v3", native_vlan: management }
 
-  s3:
+      24: { name: "to sA1", stack: { dp: sA1, port: 25 } }
+
+  sB1:
     dp_id: 0x3
     hardware: "Open vSwitch"
     interfaces:
-      1: { name: "h4", native_vlan: office }
-      2: { name: "c2", native_vlan: management }
-      21: { name: "nat2", native_vlan: management }
-      22: { name: "to s5", stack: { dp: s5, port: 24 } }
-      23: { name: "to s4", stack: { dp: s4, port: 24 } }
-      24: { name: "to s1", stack: { dp: s1, port: 21 } }
+      1: { name: "hB1v1", native_vlan: office }
+      2: { name: "hB1v2", native_vlan: guest }
+      3: { name: "hB1v3", native_vlan: management }
 
-  s4:
+      20: { name: "natB", native_vlan: management }
+      21: { name: "to sB3", stack: { dp: sB3, port: 24 } }
+      22: { name: "to sB2", stack: { dp: sB2, port: 24 } }
+
+      24: { name: "to sA1", stack: { dp: sA1, port: 23 } }
+
+  sB2:
     dp_id: 0x4
     hardware: "Open vSwitch"
     interfaces:
-      1: { name: "h5", native_vlan: management }
-      24: { name: "to s3", stack: { dp: s3, port: 23 } }
+      1: { name: "hB2v1", native_vlan: office }
+      2: { name: "hB2v2", native_vlan: guest }
+      3: { name: "hB2v3", native_vlan: management }
 
-  s5:
+      24: { name: "to sB1", stack: { dp: sB1, port: 22 } }
+
+  sB3:
     dp_id: 0x5
     hardware: "Open vSwitch"
     interfaces:
-      1: { name: "h6", native_vlan: guest }
-      24: { name: "to s3", stack: { dp: s3, port: 22 } }
+      1: { name: "hB3v1", native_vlan: office }
+      2: { name: "hB3v2", native_vlan: guest }
+      3: { name: "hB3v3", native_vlan: management }
+
+      24: { name: "to sB1", stack: { dp: sB1, port: 21 } }
