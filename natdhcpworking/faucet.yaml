@@ -79,7 +79,7 @@ dps:
       2: { name: "hB1v2", native_vlan: guest }
       3: { name: "hB1v3", native_vlan: management }
 
-      24: { name: "to sBC", stack: { dp: sBC, port: 2 } }
+      25: { name: "to sBC", stack: { dp: sBC, port: 2 } }
 
   sB2:
     dp_id: 0x4
@@ -91,7 +91,7 @@ dps:
       2: { name: "hB2v2", native_vlan: guest }
       3: { name: "hB2v3", native_vlan: management }
 
-      24: { name: "to sBC", stack: { dp: sBC, port: 3 } }
+      25: { name: "to sBC", stack: { dp: sBC, port: 3 } }
 
   sB3:
     dp_id: 0x5
@@ -103,7 +103,7 @@ dps:
       2: { name: "hB3v2", native_vlan: guest }
       3: { name: "hB3v3", native_vlan: management }
 
-      24: { name: "to sBC", stack: { dp: sBC, port: 4 } }
+      25: { name: "to sBC", stack: { dp: sBC, port: 4 } }
 
   sBC:
     dp_id: 0x7
@@ -113,8 +113,8 @@ dps:
 
       1: { name: "to sAC", stack: { dp: sAC, port: 1 } }
 
-      2: { name: "to sB1", stack: { dp: sB1, port: 24 } }
-      3: { name: "to sB2", stack: { dp: sB2, port: 24 } }
-      4: { name: "to sB3", stack: { dp: sB3, port: 24 } }
+      2: { name: "to sB1", stack: { dp: sB1, port: 25 } }
+      3: { name: "to sB2", stack: { dp: sB2, port: 25 } }
+      4: { name: "to sB3", stack: { dp: sB3, port: 25 } }
 
       20: { name: "natB", native_vlan: management }

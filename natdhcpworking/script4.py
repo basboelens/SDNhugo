@@ -150,9 +150,9 @@ class MyTopo(Topo):
         self.addLink(switchAC, switchA2, port1=3 , port2=25)
 
         # B
-        self.addLink(switchBC, switchB1, port1=2 , port2=24)
-        self.addLink(switchBC, switchB2, port1=3 , port2=24)
-        self.addLink(switchBC, switchB3, port1=4 , port2=24)
+        self.addLink(switchBC, switchB1, port1=2 , port2=25)
+        self.addLink(switchBC, switchB2, port1=3 , port2=25)
+        self.addLink(switchBC, switchB3, port1=4 , port2=25)
 
         # Darkfiber
         self.addLink(switchAC, switchBC, port1=1 , port2=1)
