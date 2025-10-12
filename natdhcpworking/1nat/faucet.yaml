@@ -1,0 +1,172 @@
+vlans:
+
+  # Gebouw A - Gateway -> natA
+  officeA:
+    vid: 100
+    faucet_mac: "0e:00:00:00:10:01"
+    faucet_vips: ["10.0.10.254/24"]
+    routes:
+      - route: { ip_dst: "0.0.0.0/0", ip_gw: "10.0.30.1" }
+
+  guestA:
+    vid: 200
+    faucet_mac: "0e:00:00:00:20:01"
+    faucet_vips: ["10.0.20.254/24"]
+    routes:
+      - route: { ip_dst: "0.0.0.0/0", ip_gw: "10.0.30.1" }
+
+  managementA:
+    vid: 300
+    faucet_mac: "0e:00:00:00:30:01"
+    faucet_vips: ["10.0.30.254/24"]
+    routes:
+      - route: { ip_dst: "0.0.0.0/0", ip_gw: "10.0.30.1" }
+
+  # Gebouw B - Gateway -> natB
+  officeB:
+    vid: 110
+    faucet_mac: "0e:00:00:00:11:01"
+    faucet_vips: ["10.1.10.254/24"]
+    routes:
+      - route: { ip_dst: "0.0.0.0/0", ip_gw: "10.1.30.1" }
+
+  guestB:
+    vid: 210
+    faucet_mac: "0e:00:00:00:21:01"
+    faucet_vips: ["10.1.20.254/24"]
+    routes:
+      - route: { ip_dst: "0.0.0.0/0", ip_gw: "10.1.30.1" }
+
+  managementB:
+    vid: 310
+    faucet_mac: "0e:00:00:00:31:01"
+    faucet_vips: ["10.1.30.254/24"]
+    routes:
+      - route: { ip_dst: "0.0.0.0/0", ip_gw: "10.1.30.1" }
+
+# Routing
+routers:
+  rtr:
+    vlans: [officeA, guestA, managementA, officeB, guestB, managementB]
+
+# Switches
+dps:
+  # Switch A1
+  sA1:
+    dp_id: 0x1
+    hardware: "Open vSwitch"
+    stack: { priority: 0 }
+    interfaces:
+
+      # Hosts
+      1: { name: "hA1v1", native_vlan: officeA }
+      2: { name: "hA1v2", native_vlan: guestA }
+      3: { name: "hA1v3", native_vlan: managementA }
+
+      # Uplink naar centerswitch
+      25: { name: "to sAC", stack: { dp: sAC, port: 2 } }
+
+  # Switch A2
+  sA2:
+    dp_id: 0x2
+    hardware: "Open vSwitch"
+    stack: { priority: 0 }
+    interfaces:
+
+      # Hosts
+      1: { name: "hA2v1", native_vlan: officeA }
+      2: { name: "hA2v2", native_vlan: guestA }
+      3: { name: "hA2v3", native_vlan: managementA }
+
+      # Uplink naar centerswitch
+      25: { name: "to sAC", stack: { dp: sAC, port: 3 } }
+
+  # Switch A Center
+  sAC:
+    dp_id: 0x6
+    hardware: "Open vSwitch"
+    stack: { priority: 1 }
+    interfaces:
+
+      # Darkfiber
+      1: { name: "to sBC", stack: { dp: sBC, port: 1 } }
+
+      # Inter-switch links
+      2: { name: "to sA1", stack: { dp: sA1, port: 25 } }
+      3: { name: "to sA2", stack: { dp: sA2, port: 25 } }
+
+      # natA
+      50: { name: "nat", native_vlan: managementA }
+
+      # DHCP
+      100: { name: "dhcp10A", native_vlan: officeA }
+      200: { name: "dhcp20A", native_vlan: guestA }
+      300: { name: "dhcp30A", native_vlan: managementA }
+
+  # Switch B1
+  sB1:
+    dp_id: 0x3
+    hardware: "Open vSwitch"
+    stack: { priority: 0 }
+    interfaces:
+
+      # Hosts
+      1: { name: "hB1v1", native_vlan: officeB }
+      2: { name: "hB1v2", native_vlan: guestB }
+      3: { name: "hB1v3", native_vlan: managementB }
+
+      # Uplink naar centerswitch
+      25: { name: "to sBC", stack: { dp: sBC, port: 2 } }
+
+  # Switch B2
+  sB2:
+    dp_id: 0x4
+    hardware: "Open vSwitch"
+    stack: { priority: 0 }
+    interfaces:
+
+      # Hosts
+      1: { name: "hB2v1", native_vlan: officeB }
+      2: { name: "hB2v2", native_vlan: guestB }
+      3: { name: "hB2v3", native_vlan: managementB }
+
+      # Uplink naar centerswitch
+      25: { name: "to sBC", stack: { dp: sBC, port: 3 } }
+
+  # Switch B3
+  sB3:
+    dp_id: 0x5
+    hardware: "Open vSwitch"
+    stack: { priority: 0 }
+    interfaces:
+
+      # Hosts
+      1: { name: "hB3v1", native_vlan: officeB }
+      2: { name: "hB3v2", native_vlan: guestB }
+      3: { name: "hB3v3", native_vlan: managementB }
+
+      # Uplink naar centerswitch
+      25: { name: "to sBC", stack: { dp: sBC, port: 4 } }
+
+  # Switch B Center
+  sBC:
+    dp_id: 0x7
+    hardware: "Open vSwitch"
+    stack: { priority: 1 }
+    interfaces:
+
+      # Darkfiber
+      1: { name: "to sAC", stack: { dp: sAC, port: 1 } }
+
+      # Inter-switch links
+      2: { name: "to sB1", stack: { dp: sB1, port: 25 } }
+      3: { name: "to sB2", stack: { dp: sB2, port: 25 } }
+      4: { name: "to sB3", stack: { dp: sB3, port: 25 } }
+
+      # natB
+      50: { name: "nat", native_vlan: managementB }
+
+      # DHCP
+      100: { name: "dhcp10B", native_vlan: officeB }
+      200: { name: "dhcp20B", native_vlan: guestB }
+      300: { name: "dhcp30B", native_vlan: managementB }
