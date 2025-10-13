@@ -1,3 +1,12 @@
+meters:
+  guest_meter:
+    meter_id: 1
+    entry:
+      flags: KBPS
+      bands:
+        - type: DROP
+          rate: 5000
+
 acls:
 
   # Office VLAN ACL (100/110)
@@ -12,7 +21,7 @@ acls:
 
     # Local VLAN
     - rule: { dl_type: 0x800, ipv4_dst: "10.0.10.0/24", actions: { allow: 1 } }
-    - rule: { dl_type: 0x800, ipv4_dst: "10.1.10.0/24", actions: { allow: 1 } } # optional A↔B connectivity
+    - rule: { dl_type: 0x800, ipv4_dst: "10.1.10.0/24", actions: { allow: 1 } }
 
     # Nat
     - rule: { dl_type: 0x800, ipv4_dst: "10.0.30.0/24", actions: { allow: 1 } }
@@ -35,8 +44,8 @@ acls:
     - rule: { dl_type: 0x800, ip_proto: 17, udp_src: 67, udp_dst: 68, actions: { allow: 1 } }
 
     # Local VLAN
-    - rule: { dl_type: 0x800, ipv4_dst: "10.0.20.0/24", actions: { allow: 1 } }
-    - rule: { dl_type: 0x800, ipv4_dst: "10.1.20.0/24", actions: { allow: 1 } } # optional A↔B connectivity
+    - rule: { dl_type: 0x800, ipv4_dst: "10.0.20.0/24", actions: { allow: 1, meter: "guest_meter" } }
+    - rule: { dl_type: 0x800, ipv4_dst: "10.1.20.0/24", actions: { allow: 1, meter: "guest_meter" } }
 
     # Nat
     - rule: { dl_type: 0x800, ipv4_dst: "10.0.30.0/24", actions: { allow: 1 } }
@@ -54,12 +63,12 @@ acls:
 
     - rule: { dl_type: 0x0806, actions: { allow: 1 } } # ARP
 
-    - rule: { dl_type: 0x800, ip_proto: 17, udp_src: 68, udp_dst: 67, actions: { allow: 1 } } # DHCP client->server
-    - rule: { dl_type: 0x800, ip_proto: 17, udp_src: 67, udp_dst: 68, actions: { allow: 1 } } # DHCP server->client
+    - rule: { dl_type: 0x800, ip_proto: 17, udp_src: 68, udp_dst: 67, actions: { allow: 1 } }
+    - rule: { dl_type: 0x800, ip_proto: 17, udp_src: 67, udp_dst: 68, actions: { allow: 1 } }
 
     # Local VLAN
     - rule: { dl_type: 0x800, ipv4_dst: "10.0.30.0/24", actions: { allow: 1 } }
-    - rule: { dl_type: 0x800, ipv4_dst: "10.1.30.0/24", actions: { allow: 1 } } # optional A↔B connectivity
+    - rule: { dl_type: 0x800, ipv4_dst: "10.1.30.0/24", actions: { allow: 1 } }
 
     # Nat
     - rule: { dl_type: 0x800, ipv4_dst: "10.0.30.254/32", actions: { allow: 1 } }
