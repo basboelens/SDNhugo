@@ -1,0 +1,75 @@
+acls:
+
+  # Office VLAN ACL (100/110)
+  office_acl:
+
+    # ARP
+    - rule: { dl_type: 0x0806, actions: { allow: 1 } }
+
+    # DHCP
+    - rule: { dl_type: 0x800, ip_proto: 17, udp_src: 68, udp_dst: 67, actions: { allow: 1 } }
+    - rule: { dl_type: 0x800, ip_proto: 17, udp_src: 67, udp_dst: 68, actions: { allow: 1 } }
+
+    # Local VLAN
+    - rule: { dl_type: 0x800, ipv4_dst: "10.0.10.0/24", actions: { allow: 1 } }
+    - rule: { dl_type: 0x800, ipv4_dst: "10.1.10.0/24", actions: { allow: 1 } } # optional A↔B connectivity
+
+    # Nat
+    - rule: { dl_type: 0x800, ipv4_dst: "10.0.30.0/24", actions: { allow: 1 } }
+    - rule: { dl_type: 0x800, ipv4_dst: "10.1.30.0/24", actions: { allow: 1 } }
+
+    # Block other VLANs
+    - rule: { dl_type: 0x800, ipv4_dst: "10.0.20.0/24", actions: { allow: 0 } }
+    - rule: { dl_type: 0x800, ipv4_dst: "10.1.20.0/24", actions: { allow: 0 } }
+
+    # Internet/NAT
+    - rule: { dl_type: 0x800, actions: { allow: 1 } }
+
+
+  # Guest VLAN ACL (200/210)
+  guest_acl:
+
+    - rule: { dl_type: 0x0806, actions: { allow: 1 } } # ARP
+
+    - rule: { dl_type: 0x800, ip_proto: 17, udp_src: 68, udp_dst: 67, actions: { allow: 1 } }
+    - rule: { dl_type: 0x800, ip_proto: 17, udp_src: 67, udp_dst: 68, actions: { allow: 1 } }
+
+    # Local VLAN
+    - rule: { dl_type: 0x800, ipv4_dst: "10.0.20.0/24", actions: { allow: 1 } }
+    - rule: { dl_type: 0x800, ipv4_dst: "10.1.20.0/24", actions: { allow: 1 } } # optional A↔B connectivity
+
+    # Nat
+    - rule: { dl_type: 0x800, ipv4_dst: "10.0.30.0/24", actions: { allow: 1 } }
+    - rule: { dl_type: 0x800, ipv4_dst: "10.1.30.0/24", actions: { allow: 1 } }
+
+    # Block office VLANs
+    - rule: { dl_type: 0x800, ipv4_dst: "10.0.10.0/24", actions: { allow: 0 } }
+    - rule: { dl_type: 0x800, ipv4_dst: "10.1.10.0/24", actions: { allow: 0 } }
+
+    # Internet/NAT
+    - rule: { dl_type: 0x800, actions: { allow: 1 } }
+
+  # Management VLAN ACL (300/310)
+  management_acl:
+
+    - rule: { dl_type: 0x0806, actions: { allow: 1 } } # ARP
+
+    - rule: { dl_type: 0x800, ip_proto: 17, udp_src: 68, udp_dst: 67, actions: { allow: 1 } } # DHCP client->server
+    - rule: { dl_type: 0x800, ip_proto: 17, udp_src: 67, udp_dst: 68, actions: { allow: 1 } } # DHCP server->client
+
+    # Local VLAN
+    - rule: { dl_type: 0x800, ipv4_dst: "10.0.30.0/24", actions: { allow: 1 } }
+    - rule: { dl_type: 0x800, ipv4_dst: "10.1.30.0/24", actions: { allow: 1 } } # optional A↔B connectivity
+
+    # Nat
+    - rule: { dl_type: 0x800, ipv4_dst: "10.0.30.254/32", actions: { allow: 1 } }
+    - rule: { dl_type: 0x800, ipv4_dst: "10.1.30.254/32", actions: { allow: 1 } }
+
+    # Block other VLANs
+    - rule: { dl_type: 0x800, ipv4_dst: "10.0.10.0/24", actions: { allow: 0 } }
+    - rule: { dl_type: 0x800, ipv4_dst: "10.1.10.0/24", actions: { allow: 0 } }
+    - rule: { dl_type: 0x800, ipv4_dst: "10.0.20.0/24", actions: { allow: 0 } }
+    - rule: { dl_type: 0x800, ipv4_dst: "10.1.20.0/24", actions: { allow: 0 } }
+
+    # Internet/NAT
+    - rule: { dl_type: 0x800, actions: { allow: 1 } }
