@@ -1,3 +1,6 @@
+include: 
+  - /etc/faucet/acls.yaml
+
 vlans:
 
   # Gebouw A - Gateway -> natA
@@ -59,9 +62,9 @@ dps:
     interfaces:
 
       # Hosts
-      1: { name: "hA1v1", native_vlan: officeA }
-      2: { name: "hA1v2", native_vlan: guestA }
-      3: { name: "hA1v3", native_vlan: managementA }
+      1: { name: "hA1v1", native_vlan: officeA, acls_in: [office_acl] }
+      2: { name: "hA1v2", native_vlan: guestA, acls_in: [guest_acl] }
+      3: { name: "hA1v3", native_vlan: managementA, acls_in: [management_acl], max_hosts: 1, permanent_learn: True }
 
       # Uplink naar centerswitch
       25: { name: "to sAC", stack: { dp: sAC, port: 2 } }
@@ -74,9 +77,9 @@ dps:
     interfaces:
 
       # Hosts
-      1: { name: "hA2v1", native_vlan: officeA }
-      2: { name: "hA2v2", native_vlan: guestA }
-      3: { name: "hA2v3", native_vlan: managementA }
+      1: { name: "hA2v1", native_vlan: officeA, acls_in: [office_acl] }  
+      2: { name: "hA2v2", native_vlan: guestA, acls_in: [guest_acl] }
+      3: { name: "hA2v3", native_vlan: managementA, acls_in: [management_acl], max_hosts: 1, permanent_learn: True }
 
       # Uplink naar centerswitch
       25: { name: "to sAC", stack: { dp: sAC, port: 3 } }
@@ -111,9 +114,9 @@ dps:
     interfaces:
 
       # Hosts
-      1: { name: "hB1v1", native_vlan: officeB }
-      2: { name: "hB1v2", native_vlan: guestB }
-      3: { name: "hB1v3", native_vlan: managementB }
+      1: { name: "hB1v1", native_vlan: officeB, acls_in: [office_acl] }
+      2: { name: "hB1v2", native_vlan: guestB, acls_in: [guest_acl] }
+      3: { name: "hB1v3", native_vlan: managementB, acls_in: [management_acl], max_hosts: 1, permanent_learn: True }
 
       # Uplink naar centerswitch
       25: { name: "to sBC", stack: { dp: sBC, port: 2 } }
@@ -126,9 +129,9 @@ dps:
     interfaces:
 
       # Hosts
-      1: { name: "hB2v1", native_vlan: officeB }
-      2: { name: "hB2v2", native_vlan: guestB }
-      3: { name: "hB2v3", native_vlan: managementB }
+      1: { name: "hB2v1", native_vlan: officeB, acls_in: [office_acl] }
+      2: { name: "hB2v2", native_vlan: guestB, acls_in: [guest_acl] }
+      3: { name: "hB2v3", native_vlan: managementB, acls_in: [management_acl], max_hosts: 1, permanent_learn: True }
 
       # Uplink naar centerswitch
       25: { name: "to sBC", stack: { dp: sBC, port: 3 } }
@@ -141,9 +144,9 @@ dps:
     interfaces:
 
       # Hosts
-      1: { name: "hB3v1", native_vlan: officeB }
-      2: { name: "hB3v2", native_vlan: guestB }
-      3: { name: "hB3v3", native_vlan: managementB }
+      1: { name: "hB3v1", native_vlan: officeB, acls_in: [office_acl] }
+      2: { name: "hB3v2", native_vlan: guestB, acls_in: [guest_acl] }
+      3: { name: "hB3v3", native_vlan: managementB, acls_in: [management_acl], max_hosts: 1, permanent_learn: True }
 
       # Uplink naar centerswitch
       25: { name: "to sBC", stack: { dp: sBC, port: 4 } }
@@ -152,7 +155,7 @@ dps:
   sBC:
     dp_id: 0x7
     hardware: "Open vSwitch"
-    stack: { priority: 1 }
+    stack: { priority: 2 }
     interfaces:
 
       # Darkfiber
