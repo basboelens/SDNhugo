@@ -36,27 +36,27 @@ acls:
 
 
   # Guest VLAN ACL (200/210)
+# Guest VLAN ACL (200/210)
   guest_acl:
 
     - rule: { dl_type: 0x0806, actions: { allow: 1 } } # ARP
 
-    - rule: { dl_type: 0x800, ip_proto: 17, udp_src: 68, udp_dst: 67, actions: { allow: 1 } }
-    - rule: { dl_type: 0x800, ip_proto: 17, udp_src: 67, udp_dst: 68, actions: { allow: 1 } }
+    - rule: { dl_type: 0x800, ip_proto: 17, udp_src: 68, udp_dst: 67, actions: { allow: 1 } } # DHCP
+    - rule: { dl_type: 0x800, ip_proto: 17, udp_src: 67, udp_dst: 68, actions: { allow: 1 } } # DHCP
 
-    # Local VLAN
-    - rule: { dl_type: 0x800, ipv4_dst: "10.0.20.0/24", actions: { allow: 1, meter: "guest_meter" } }
-    - rule: { dl_type: 0x800, ipv4_dst: "10.1.20.0/24", actions: { allow: 1, meter: "guest_meter" } }
+    - rule: { dl_type: 0x800, ipv4_dst: "10.0.20.0/24", actions: { allow: 0 } } # Blokkeer binnen Gast A
+    - rule: { dl_type: 0x800, ipv4_dst: "10.1.20.0/24", actions: { allow: 0 } } # Blokkeer binnen Gast B
 
     # Nat
     - rule: { dl_type: 0x800, ipv4_dst: "10.0.30.0/24", actions: { allow: 1 } }
     - rule: { dl_type: 0x800, ipv4_dst: "10.1.30.0/24", actions: { allow: 1 } }
 
-    # Block office VLANs
+    # Block office VLANs (Blijft hetzelfde)
     - rule: { dl_type: 0x800, ipv4_dst: "10.0.10.0/24", actions: { allow: 0 } }
     - rule: { dl_type: 0x800, ipv4_dst: "10.1.10.0/24", actions: { allow: 0 } }
 
-    # Internet/NAT
-    - rule: { dl_type: 0x800, actions: { allow: 1 } }
+    # Internet/NAT (Blijft hetzelfde)
+    - rule: { dl_type: 0x800, actions: { allow: 1, meter: "guest_meter" } }
 
   # Management VLAN ACL (300/310)
   management_acl:
