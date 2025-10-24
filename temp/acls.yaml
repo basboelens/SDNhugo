@@ -1,0 +1,137 @@
+meters:
+  guest_meter:
+    meter_id: 1
+    entry:
+      flags: KBPS
+      bands:
+        - type: DROP
+          rate: 5000
+
+acls:
+
+  # Office VLAN ACL (100/110)
+  office_acl:
+
+    # ARP
+    - rule: { dl_type: 0x0806, actions: { allow: 1 } }
+    # NDP (IPv6 Neighbor Discovery/ICMPv6)
+    - rule: { dl_type: 0x86dd, ip_proto: 58, actions: { allow: 1 } }
+
+    # DHCPv4
+    - rule: { dl_type: 0x800, ip_proto: 17, udp_src: 68, udp_dst: 67, actions: { allow: 1 } }
+    - rule: { dl_type: 0x800, ip_proto: 17, udp_src: 67, udp_dst: 68, actions: { allow: 1 } }
+    # DHCPv6
+    - rule: { dl_type: 0x86dd, ip_proto: 17, udp_src: 546, udp_dst: 547, actions: { allow: 1 } }
+    - rule: { dl_type: 0x86dd, ip_proto: 17, udp_src: 547, udp_dst: 546, actions: { allow: 1 } }
+
+    # Local VLAN (IPv4)
+    - rule: { dl_type: 0x800, ipv4_dst: "10.0.10.0/24", actions: { allow: 1 } }
+    - rule: { dl_type: 0x800, ipv4_dst: "10.1.10.0/24", actions: { allow: 1 } }
+    # Local VLAN (IPv6)
+    - rule: { dl_type: 0x86dd, ipv6_dst: "2042:100::/64", actions: { allow: 1 } }
+    - rule: { dl_type: 0x86dd, ipv6_dst: "2042:110::/64", actions: { allow: 1 } }
+
+    # Nat (IPv4)
+    - rule: { dl_type: 0x800, ipv4_dst: "10.0.30.0/24", actions: { allow: 1 } }
+    - rule: { dl_type: 0x800, ipv4_dst: "10.1.30.0/24", actions: { allow: 1 } }
+    # Nat (IPv6)
+    - rule: { dl_type: 0x86dd, ipv6_dst: "2042:300::/64", actions: { allow: 1 } }
+    - rule: { dl_type: 0x86dd, ipv6_dst: "2042:330::/64", actions: { allow: 1 } }
+
+    # Block other VLANs (Guest - IPv4)
+    - rule: { dl_type: 0x800, ipv4_dst: "10.0.20.0/24", actions: { allow: 0 } }
+    - rule: { dl_type: 0x800, ipv4_dst: "10.1.20.0/24", actions: { allow: 0 } }
+    # Block other VLANs (Guest - IPv6)
+    - rule: { dl_type: 0x86dd, ipv6_dst: "2042:200::/64", actions: { allow: 0 } }
+    - rule: { dl_type: 0x86dd, ipv6_dst: "2042:220::/64", actions: { allow: 0 } }
+
+    # Internet/NAT (IPv4 catch-all)
+    - rule: { dl_type: 0x800, actions: { allow: 1 } }
+    # Internet/NAT (IPv6 catch-all)
+    - rule: { dl_type: 0x86dd, actions: { allow: 1 } }
+
+
+  # Guest VLAN ACL (200/210)
+  guest_acl:
+
+    - rule: { dl_type: 0x0806, actions: { allow: 1 } } # ARP
+    - rule: { dl_type: 0x86dd, ip_proto: 58, actions: { allow: 1 } } # NDP/ICMPv6
+
+    # DHCPv4
+    - rule: { dl_type: 0x800, ip_proto: 17, udp_src: 68, udp_dst: 67, actions: { allow: 1 } }
+    - rule: { dl_type: 0x800, ip_proto: 17, udp_src: 67, udp_dst: 68, actions: { allow: 1 } }
+    # DHCPv6
+    - rule: { dl_type: 0x86dd, ip_proto: 17, udp_src: 546, udp_dst: 547, actions: { allow: 1 } }
+    - rule: { dl_type: 0x86dd, ip_proto: 17, udp_src: 547, udp_dst: 546, actions: { allow: 1 } }
+
+    # Blokkeer binnen Gast A (Intra-VLAN block - IPv4)
+    - rule: { dl_type: 0x800, ipv4_dst: "10.0.20.0/24", actions: { allow: 0 } }
+    # Blokkeer binnen Gast A (Intra-VLAN block - IPv6)
+    - rule: { dl_type: 0x86dd, ipv6_dst: "2042:200::/64", actions: { allow: 0 } }
+    
+    # Blokkeer binnen Gast B (Intra-VLAN block - IPv4)
+    - rule: { dl_type: 0x800, ipv4_dst: "10.1.20.0/24", actions: { allow: 0 } }
+    # Blokkeer binnen Gast B (Intra-VLAN block - IPv6)
+    - rule: { dl_type: 0x86dd, ipv6_dst: "2042:220::/64", actions: { allow: 0 } }
+
+    # Nat (IPv4)
+    - rule: { dl_type: 0x800, ipv4_dst: "10.0.30.0/24", actions: { allow: 1 } }
+    - rule: { dl_type: 0x800, ipv4_dst: "10.1.30.0/24", actions: { allow: 1 } }
+    # Nat (IPv6)
+    - rule: { dl_type: 0x86dd, ipv6_dst: "2042:300::/64", actions: { allow: 1 } }
+    - rule: { dl_type: 0x86dd, ipv6_dst: "2042:330::/64", actions: { allow: 1 } }
+
+    # Block office VLANs (IPv4)
+    - rule: { dl_type: 0x800, ipv4_dst: "10.0.10.0/24", actions: { allow: 0 } }
+    - rule: { dl_type: 0x800, ipv4_dst: "10.1.10.0/24", actions: { allow: 0 } }
+    # Block office VLANs (IPv6)
+    - rule: { dl_type: 0x86dd, ipv6_dst: "2042:100::/64", actions: { allow: 0 } }
+    - rule: { dl_type: 0x86dd, ipv6_dst: "2042:110::/64", actions: { allow: 0 } }
+
+    # Internet/NAT (IPv4)
+    - rule: { dl_type: 0x800, actions: { allow: 1, meter: "guest_meter" } }
+    # Internet/NAT (IPv6)
+    - rule: { dl_type: 0x86dd, actions: { allow: 1, meter: "guest_meter" } }
+
+  # Management VLAN ACL (300/310)
+  management_acl:
+
+    - rule: { dl_type: 0x0806, actions: { allow: 1 } } # ARP
+    - rule: { dl_type: 0x86dd, ip_proto: 58, actions: { allow: 1 } } # NDP/ICMPv6
+
+    # DHCPv4
+    - rule: { dl_type: 0x800, ip_proto: 17, udp_src: 68, udp_dst: 67, actions: { allow: 1 } }
+    - rule: { dl_type: 0x800, ip_proto: 17, udp_src: 67, udp_dst: 68, actions: { allow: 1 } }
+    # DHCPv6
+    - rule: { dl_type: 0x86dd, ip_proto: 17, udp_src: 546, udp_dst: 547, actions: { allow: 1 } }
+    - rule: { dl_type: 0x86dd, ip_proto: 17, udp_src: 547, udp_dst: 546, actions: { allow: 1 } }
+
+    # Local VLAN (IPv4)
+    - rule: { dl_type: 0x800, ipv4_dst: "10.0.30.0/24", actions: { allow: 1 } }
+    - rule: { dl_type: 0x800, ipv4_dst: "10.1.30.0/24", actions: { allow: 1 } }
+    # Local VLAN (IPv6)
+    - rule: { dl_type: 0x86dd, ipv6_dst: "2042:300::/64", actions: { allow: 1 } }
+    - rule: { dl_type: 0x86dd, ipv6_dst: "2042:330::/64", actions: { allow: 1 } }
+
+    # Nat (IPv6 - Allow traffic to NAT's LAN IP only)
+    - rule: { dl_type: 0x86dd, ipv6_dst: "2042:300::1/128", actions: { allow: 1 } } 
+    - rule: { dl_type: 0x86dd, ipv6_dst: "2042:330::1/128", actions: { allow: 1 } }
+
+    # Block other VLANs (Office - IPv4)
+    - rule: { dl_type: 0x800, ipv4_dst: "10.0.10.0/24", actions: { allow: 0 } }
+    - rule: { dl_type: 0x800, ipv4_dst: "10.1.10.0/24", actions: { allow: 0 } }
+    # Block other VLANs (Office - IPv6)
+    - rule: { dl_type: 0x86dd, ipv6_dst: "2042:100::/64", actions: { allow: 0 } }
+    - rule: { dl_type: 0x86dd, ipv6_dst: "2042:110::/64", actions: { allow: 0 } }
+
+    # Block other VLANs (Guest - IPv4)
+    - rule: { dl_type: 0x800, ipv4_dst: "10.0.20.0/24", actions: { allow: 0 } }
+    - rule: { dl_type: 0x800, ipv4_dst: "10.1.20.0/24", actions: { allow: 0 } }
+    # Block other VLANs (Guest - IPv6)
+    - rule: { dl_type: 0x86dd, ipv6_dst: "2042:200::/64", actions: { allow: 0 } }
+    - rule: { dl_type: 0x86dd, ipv6_dst: "2042:220::/64", actions: { allow: 0 } }
+
+    # Internet/NAT (IPv4)
+    - rule: { dl_type: 0x800, actions: { allow: 1 } }
+    # Internet/NAT (IPv6)
+    - rule: { dl_type: 0x86dd, actions: { allow: 1 } }
