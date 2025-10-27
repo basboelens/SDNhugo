@@ -1,0 +1,70 @@
+meters:
+  guest_meter:
+    meter_id: 1
+    entry:
+      flags: KBPS
+      bands:
+        - type: DROP
+          rate: 5000
+
+acls:
+
+  # Office VLAN ACL (100)
+  office_acl:
+
+    - rule: { dl_type: 0x0806, actions: { allow: 1 } } # ARP
+    - rule: { dl_type: 0x86dd, ip_proto: 58, actions: { allow: 1 } } # NDP/ICMPv6
+    - rule: { dl_type: 0x800, ip_proto: 17, udp_src: 68, udp_dst: 67, actions: { allow: 1 } } # DHCPv4
+    - rule: { dl_type: 0x86dd, ip_proto: 17, udp_src: 546, udp_dst: 547, actions: { allow: 1 } } # DHCPv6
+
+    - rule: { dl_type: 0x800, ipv4_dst: "10.0.10.0/24", actions: { allow: 1 } }
+    - rule: { dl_type: 0x86dd, ipv6_dst: "2042:100::/64", actions: { allow: 1 } }
+
+    - rule: { dl_type: 0x800, ipv4_dst: "10.0.30.0/24", actions: { allow: 1 } }
+    - rule: { dl_type: 0x86dd, ipv6_dst: "2042:300::/64", actions: { allow: 1 } }
+
+    - rule: { dl_type: 0x800, ipv4_dst: "10.0.20.0/24", actions: { allow: 0 } }
+    - rule: { dl_type: 0x86dd, ipv6_dst: "2042:200::/64", actions: { allow: 0 } }
+
+    - rule: { dl_type: 0x800, actions: { allow: 1 } }
+    - rule: { dl_type: 0x86dd, actions: { allow: 1 } }
+
+  # Guest VLAN ACL (200)
+  guest_acl:
+
+    - rule: { dl_type: 0x0806, actions: { allow: 1 } }
+    - rule: { dl_type: 0x86dd, ip_proto: 58, actions: { allow: 1 } }
+    - rule: { dl_type: 0x800, ip_proto: 17, udp_src: 68, udp_dst: 67, actions: { allow: 1 } }
+    - rule: { dl_type: 0x86dd, ip_proto: 17, udp_src: 546, udp_dst: 547, actions: { allow: 1 } }
+
+    - rule: { dl_type: 0x800, ipv4_dst: "10.0.20.0/24", actions: { allow: 0 } }
+    - rule: { dl_type: 0x86dd, ipv6_dst: "2042:200::/64", actions: { allow: 0 } }
+    
+    - rule: { dl_type: 0x800, ipv4_dst: "10.0.30.0/24", actions: { allow: 1 } }
+    - rule: { dl_type: 0x86dd, ipv6_dst: "2042:300::/64", actions: { allow: 1 } }
+
+    - rule: { dl_type: 0x800, ipv4_dst: "10.0.10.0/24", actions: { allow: 0 } }
+    - rule: { dl_type: 0x86dd, ipv6_dst: "2042:100::/64", actions: { allow: 0 } }
+
+    - rule: { dl_type: 0x800, actions: { allow: 1, meter: "guest_meter" } }
+    - rule: { dl_type: 0x86dd, actions: { allow: 1, meter: "guest_meter" } }
+
+  # Management VLAN ACL (300)
+  management_acl:
+
+    - rule: { dl_type: 0x0806, actions: { allow: 1 } }
+    - rule: { dl_type: 0x86dd, ip_proto: 58, actions: { allow: 1 } }
+    - rule: { dl_type: 0x800, ip_proto: 17, udp_src: 68, udp_dst: 67, actions: { allow: 1 } }
+    - rule: { dl_type: 0x86dd, ip_proto: 17, udp_src: 546, udp_dst: 547, actions: { allow: 1 } }
+
+    - rule: { dl_type: 0x800, ipv4_dst: "10.0.30.0/24", actions: { allow: 1 } }
+    - rule: { dl_type: 0x86dd, ipv6_dst: "2042:300::/64", actions: { allow: 1 } }
+
+    - rule: { dl_type: 0x800, ipv4_dst: "10.0.10.0/24", actions: { allow: 0 } }
+    - rule: { dl_type: 0x86dd, ipv6_dst: "2042:100::/64", actions: { allow: 0 } }
+    
+    - rule: { dl_type: 0x800, ipv4_dst: "10.0.20.0/24", actions: { allow: 0 } }
+    - rule: { dl_type: 0x86dd, ipv6_dst: "2042:200::/64", actions: { allow: 0 } }
+
+    - rule: { dl_type: 0x800, actions: { allow: 1 } }
+    - rule: { dl_type: 0x86dd, actions: { allow: 1 } }
