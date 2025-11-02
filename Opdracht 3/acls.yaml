@@ -40,8 +40,8 @@ acls:
     - rule: { dl_type: 0x800, ipv4_dst: "10.0.20.0/24", actions: { allow: 0 } }
     - rule: { dl_type: 0x86dd, ipv6_dst: "2042:200::/64", actions: { allow: 0 } }
     
-    - rule: { dl_type: 0x800, ipv4_dst: "10.0.30.0/24", actions: { allow: 1 } }
-    - rule: { dl_type: 0x86dd, ipv6_dst: "2042:300::/64", actions: { allow: 1 } }
+    - rule: { dl_type: 0x800, ipv4_dst: "10.0.30.0/24", actions: { allow: 1, meter: "guest_meter" } }
+    - rule: { dl_type: 0x86dd, ipv6_dst: "2042:300::/64", actions: { allow: 1, meter: "guest_meter" } }
 
     - rule: { dl_type: 0x800, ipv4_dst: "10.0.10.0/24", actions: { allow: 0 } }
     - rule: { dl_type: 0x86dd, ipv6_dst: "2042:100::/64", actions: { allow: 0 } }
