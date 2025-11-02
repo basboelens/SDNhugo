@@ -193,7 +193,6 @@ def run():
     nat_node = net.get('nat')
     isp_node = net.get('isp')
     natA_lan = intf_to_peer(nat_node, 'sAC')
-    natB_lan = intf_to_peer(nat_node, 'sBC')
     nat_wan = intf_to_peer(nat_node, 'isp')
     isp_to_nat = intf_to_peer(isp_node, 'nat')
 
@@ -206,13 +205,9 @@ def run():
 
     # NAT configuration
     nat_node.cmd(f'ip addr flush dev {natA_lan}')
-    nat_node.cmd(f'ip addr flush dev {natB_lan}')
     
     nat_node.cmd(f'ip addr replace 10.0.30.1/24 dev {natA_lan}')
-    nat_node.cmd(f'ip addr replace 10.1.30.1/24 dev {natB_lan}') 
     nat_node.cmd(f'ip addr add {NAT_A_V6}/64 dev {natA_lan}')
-
-    nat_node.cmd(f'ip addr add 2042:300::2/64 dev {natB_lan}') 
     
     # WAN (IPv4/IPv6)
     nat_node.cmd(f'ip addr replace 221.1.1.2/30 dev {nat_wan}')
@@ -225,9 +220,6 @@ def run():
     # Static Routes to other VLANs
     nat_node.cmd(f'ip route replace 10.0.10.0/24 via 10.0.30.254 dev {natA_lan}')
     nat_node.cmd(f'ip route replace 10.0.20.0/24 via 10.0.30.254 dev {natA_lan}')
-
-    nat_node.cmd(f'ip route replace 10.1.10.0/24 via 10.0.30.254 dev {natA_lan}')
-    nat_node.cmd(f'ip route replace 10.1.20.0/24 via 10.0.30.254 dev {natA_lan}')
 
     nat_node.cmd(f'ip -6 route add 2042:100::/64 via 2042:300::254 dev {natA_lan}')
     nat_node.cmd(f'ip -6 route add 2042:200::/64 via 2042:300::254 dev {natA_lan}')
