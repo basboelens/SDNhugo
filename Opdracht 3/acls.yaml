@@ -13,7 +13,6 @@ acls:
   office_acl:
 
     - rule: { dl_type: 0x0806, actions: { allow: 1 } } # ARP
-    - rule: { dl_type: 0x86dd, ip_proto: 58, actions: { allow: 1 } } # NDP/ICMPv6
     - rule: { dl_type: 0x800, ip_proto: 17, udp_src: 68, udp_dst: 67, actions: { allow: 1 } } # DHCPv4
     - rule: { dl_type: 0x86dd, ip_proto: 17, udp_src: 546, udp_dst: 547, actions: { allow: 1 } } # DHCPv6
 
@@ -33,7 +32,6 @@ acls:
   guest_acl:
 
     - rule: { dl_type: 0x0806, actions: { allow: 1 } }
-    - rule: { dl_type: 0x86dd, ip_proto: 58, actions: { allow: 1 } }
     - rule: { dl_type: 0x800, ip_proto: 17, udp_src: 68, udp_dst: 67, actions: { allow: 1 } }
     - rule: { dl_type: 0x86dd, ip_proto: 17, udp_src: 546, udp_dst: 547, actions: { allow: 1 } }
 
